@@ -31,29 +31,33 @@ export default function DishButton({
             image: dishItem.image || "",
           })
         }
-        className="px-4 py-2 bg-indigo-600 text-white rounded-md"
+        className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium transition-colors duration-200 active:scale-95"
       >
-        Add
+        Add to Cart
       </button>
     );
   }
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-3 bg-orange-50 rounded-lg px-3 py-2 border border-orange-200">
       <button
         onClick={() => decrease(dishItem.id)}
-        className="px-3 py-1 bg-gray-200 rounded-md"
+        className="w-8 h-8 flex items-center justify-center bg-white text-orange-600 rounded-lg border border-orange-200 hover:bg-orange-100 transition-colors duration-200 active:scale-95"
+        aria-label="Decrease quantity"
       >
-        -
+        <span className="text-lg font-medium">−</span>
       </button>
 
-      <span className="min-w-[28px] text-center">{qty}</span>
+      <span className="min-w-[32px] text-center font-semibold text-gray-900">
+        {qty}
+      </span>
 
       <button
         onClick={() => increase(dishItem.id)}
-        className="px-3 py-1 bg-indigo-600 text-white rounded-md"
+        className="w-8 h-8 flex items-center justify-center bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors duration-200 active:scale-95"
+        aria-label="Increase quantity"
       >
-        +
+        <span className="text-lg font-medium">+</span>
       </button>
     </div>
   );

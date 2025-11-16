@@ -3,7 +3,6 @@
 import { getTotalPrice, getTotalQty, useCart } from "@/store/useCart.store";
 import { useUserDetail } from "@/store/useUserDetail.store";
 import { createOrderAction } from "@/actions/createOrderAction";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -100,95 +99,232 @@ export default function OrderButton() {
   // -----------------------------------------------------
   return (
     <>
-      <div className="bg-white shadow-md rounded-xl p-6">
-        <h2 className="text-xl font-semibold mb-4">Choose Payment Method</h2>
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">
+          Payment Method
+        </h2>
 
-        {error && <p className="text-red-500 mb-3 text-sm">{error}</p>}
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <p className="text-red-600 text-sm">{error}</p>
+          </div>
+        )}
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           <button
             onClick={() => openModal("pod")}
-            className="w-full py-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-left px-4 flex justify-between items-center"
+            className="w-full p-4 border border-gray-300 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors duration-200 text-left"
           >
-            <span className="font-medium">Pay on Delivery</span>
-            <span>💵</span>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-gray-900">Pay on Delivery</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Pay when food arrives
+                </p>
+              </div>
+              <span className="text-xl">💵</span>
+            </div>
           </button>
 
           <button
             onClick={() => openModal("online")}
-            className="w-full py-3 bg-gray-100 hover:bg-gray-200 rounded-lg text-left px-4 flex justify-between items-center"
+            className="w-full p-4 border border-gray-300 rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors duration-200 text-left"
           >
-            <span className="font-medium">Pay Now (UPI)</span>
-            <span>📱</span>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-gray-900">Pay Now (UPI)</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Instant UPI payment
+                </p>
+              </div>
+              <span className="text-xl">📱</span>
+            </div>
           </button>
         </div>
       </div>
 
       {/* -------------- MODAL ---------------- */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
-          <div className="bg-white rounded-xl shadow-lg p-6 w-[90%] max-w-md relative">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-3 right-3 text-gray-600"
-            >
-              ✕
-            </button>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-xl w-full max-w-md">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200">
+              <h2 className="text-lg font-semibold text-gray-900">
+                {paymentMode === "pod" ? "Confirm Order" : "UPI Payment"}
+              </h2>
+              <button
+                onClick={() => setShowModal(false)}
+                className="w-8 h-8 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+            </div>
 
-            {error && (
-              <p className="text-red-500 text-center mb-3 text-sm">{error}</p>
-            )}
+            {/* Content */}
+            <div className="p-6">
+              {error && (
+                <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                  <p className="text-red-600 text-sm">{error}</p>
+                </div>
+              )}
 
-            {!orderId ? (
-              <>
-                {paymentMode === "pod" && (
-                  <div className="text-center space-y-4">
-                    <h2 className="text-2xl font-semibold">
-                      Confirm Pay-on-Delivery Order
-                    </h2>
+              {!orderId ? (
+                <>
+                  {paymentMode === "pod" && (
+                    <div className="space-y-6">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <span className="text-2xl">💵</span>
+                        </div>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                          Pay on Delivery
+                        </h3>
+                        <p className="text-gray-500 text-sm">
+                          Pay ₹{totalPrice.toFixed(2)} when your food arrives
+                        </p>
+                      </div>
 
-                    <p className="text-gray-600">Pay when food arrives.</p>
-
-                    <button
-                      onClick={handleConfirm}
-                      className="w-full py-3 bg-indigo-600 text-white rounded-lg"
-                    >
-                      {isProcessing ? "Placing..." : "Confirm Order"}
-                    </button>
-                  </div>
-                )}
-
-                {paymentMode === "online" && (
-                  <div className="text-center space-y-4">
-                    <h2 className="text-xl font-semibold">Scan & Pay</h2>
-
-                    <div className="w-40 h-40 mx-auto bg-gray-200 flex items-center justify-center rounded-lg">
-                      <span className="text-sm">QR CODE</span>
+                      <button
+                        onClick={handleConfirm}
+                        disabled={isProcessing}
+                        className="w-full py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-orange-400 transition-colors duration-200 font-medium"
+                      >
+                        {isProcessing ? (
+                          <span className="flex items-center justify-center">
+                            <svg
+                              className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                            Placing Order...
+                          </span>
+                        ) : (
+                          "Confirm Order"
+                        )}
+                      </button>
                     </div>
+                  )}
 
-                    <input
-                      placeholder="Enter your UPI ID"
-                      value={upiId}
-                      onChange={(e) => setUpiId(e.target.value)}
-                      className="w-full px-4 py-2 border rounded-lg"
-                    />
+                  {paymentMode === "online" && (
+                    <div className="space-y-6">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <span className="text-2xl">📱</span>
+                        </div>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">
+                          UPI Payment
+                        </h3>
+                        <p className="text-gray-500 text-sm">
+                          Complete payment using any UPI app
+                        </p>
+                      </div>
 
-                    <button
-                      onClick={handleConfirm}
-                      className="w-full py-3 bg-indigo-600 text-white rounded-lg"
-                    >
-                      {isProcessing ? "Processing..." : "Confirm Payment"}
-                    </button>
+                      {/* QR Code Placeholder */}
+                      <div className="w-48 h-48 mx-auto bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                        <div className="text-center">
+                          <span className="text-4xl mb-2">📲</span>
+                          <p className="text-xs text-gray-500">
+                            Scan with UPI app
+                          </p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="upiId"
+                          className="block text-sm font-medium text-gray-700 mb-2"
+                        >
+                          UPI ID
+                        </label>
+                        <input
+                          id="upiId"
+                          type="text"
+                          placeholder="yourname@upi"
+                          value={upiId}
+                          onChange={(e) => setUpiId(e.target.value)}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-orange-500 transition-colors"
+                        />
+                      </div>
+
+                      <button
+                        onClick={handleConfirm}
+                        disabled={isProcessing}
+                        className="w-full py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 disabled:bg-orange-400 transition-colors duration-200 font-medium"
+                      >
+                        {isProcessing ? (
+                          <span className="flex items-center justify-center">
+                            <svg
+                              className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                            >
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                              ></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                              ></path>
+                            </svg>
+                            Processing...
+                          </span>
+                        ) : (
+                          `Pay ₹${totalPrice.toFixed(2)}`
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="text-center space-y-4 py-4">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-2xl">✅</span>
                   </div>
-                )}
-              </>
-            ) : (
-              <div className="text-center space-y-3">
-                <h2 className="text-2xl font-semibold">Order Placed!</h2>
-                <p className="text-gray-600">Order ID: {orderId}</p>
-                <p className="text-gray-500">Redirecting...</p>
-              </div>
-            )}
+                  <h3 className="text-lg font-medium text-gray-900">
+                    Order Placed!
+                  </h3>
+                  <p className="text-sm text-gray-600">
+                    Order ID:{" "}
+                    <span className="font-mono text-orange-600">{orderId}</span>
+                  </p>
+                  <p className="text-gray-500 text-sm">
+                    Redirecting to homepage...
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}
