@@ -1,7 +1,13 @@
+import Calculator from "@/components/calculator.client";
+import Dishes from "@/components/dishes";
 import React from "react";
 
-function page() {
-  return <div>page</div>;
+function HomePage() {
+  return (
+    <div>
+      <Dishes />
+    </div>
+  );
 }
 
-export default page;
+export default HomePage;
